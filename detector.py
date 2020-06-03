@@ -6,7 +6,8 @@ from PIL import Image
 from tflite_runtime.interpreter import Interpreter
 
 class Detector(object):
-    def __init__(self, path_to_model):
+    def __init__(self, path_to_model, threshold):
+        self.threshold = threshold
         self.__camera = picamera.PiCamera(resolution=(640, 480), framerate=30)
         self.__camera.start_preview()
 
@@ -31,7 +32,7 @@ class Detector(object):
             self.__camera.capture(self.__stream, 'jpeg')
             image = Image.open(self.__stream).convert('RGB').resize(self.__img_input_size, Image.ANTIALIAS)
 
-            self.__is_cat_detected, foo = self.__is_cat(image)
+            self.__is_cat_detected = self.__is_cat(image)
             
 
             self.__stream.seek(0)
@@ -54,5 +55,5 @@ class Detector(object):
         output_details = self.__interpreter.get_output_details()[0]
         output = np.squeeze(self.__interpreter.get_tensor(output_details['index']))
 
-        return output < -5, output
+        return output < self.threshold if self.threshold < 0 else output > self.threshold
 

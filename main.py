@@ -15,6 +15,10 @@ if 'PATH_TO_MODEL' not in environ:
     print("[ERROR] You must provide PATH_TO_MODEL env variable. Path to .tflite file")
     exit(1)
 
+if 'THRESHOLD' not in environ or environ.get('THRESHOLD') == 0:
+    print("[ERROR] You must provide THRESHOLD env variable. For detect object 1 threshold should be above zero, otherwise under zero")
+    exit(1)
+
 
 def main():
     bulb = LED(environ.get('GPIO_LED'))
