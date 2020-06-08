@@ -33,7 +33,6 @@ class Detector(object):
             image = Image.open(self.__stream).convert('RGB').resize(self.__img_input_size, Image.ANTIALIAS)
 
             self.__is_cat_detected = self.__is_cat(image)
-            
 
             self.__stream.seek(0)
             self.__stream.truncate()
