@@ -7,7 +7,6 @@ class WaterGun(object):
         self.gun = OutputDevice(gpio_num, active_high=False)
 
     def fire(self, shots_num):
-        print('shot')
         self.gun.on()
         time.sleep(shots_num)
         self.gun.off()

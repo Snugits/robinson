@@ -24,7 +24,13 @@ My Supplies:
  * Lego
 
 ### Software
+#### Detector's work
+All work with model in [detector.py](./detector.py). But let's go through by key points.
+First, we need class `Detector` and only two public methods: `check` and `is_detect` so simple.\
+Every calling of `check` will take a picture and try to recognize objects, after that we should ask is there any detections: `is_detect`.
 
+#### WaterGun
+It is simple wrapper to work with `gpiozero`. One note that I want to emphasize there: `OutputDevice(gpio_num, active_high=False)`, the parameter `active_high`. If left it in default value (`True`) your relay will work unobvious. You should turn on with method `off` and turn off vice versa. 
 
 ### ML
 This article is not about how to train model. I'm a programmer, but I'm interested in Data Science. And here I show how to use a model in a script.
@@ -36,10 +42,6 @@ I used a [docker image](https://hub.docker.com/r/tensorflow/tensorflow/) with Te
 `tflite_convert  --output_file=./model.tflite  --saved_model_dir=/model`\
 **--output_file** - Path where you want to save converted model\
 **--saved_model_dir** - Path to folder which you've saved with `tf.saved_model.save`
-#### Detector's work
-All work with model in [detector.py](./detector.py). But let's go through by key points.
-First, we need class `Detector` and only two public methods: `check` and `is_detect` so simple.\
-Every calling of `check` will take a picture and try to recognize objects, after that we should ask is there any detections: `is_detect`.
 
 #### Inference
 We need to create `Interpreter` and pass the path to our converted `.tflite` model. After that we can get info about tensors by `get_input_details()`. But we need to know only about first (input) tensor `get_input_details()[0]` - will return dict, where we need get key `shape` and there we have array like this: `[  1, 160, 160,   3]`.
@@ -55,4 +57,4 @@ And further tricky moment `[:, :] = image` at right side _(shape (160, 160, 3))_
 After that we call `self.__interpreter.invoke()` it makes calculation magic and get the result `self.__interpreter.get_output_details()[0]`\
 In the result we get number and result < 0 means that network detects first class object, result > 0 - second class object. And the more further from zero, the more confident result.
 
-## Conclusion
+**P.S.** During the development of this project, no one animal was injured.
