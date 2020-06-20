@@ -1,5 +1,5 @@
 # Robinson - the robot that protects your belongings from cat curiosity
-
+![image](https://drive.google.com/uc?export=view&id=1DjYJ_cFkRNhrUdMPuErWysJa0Ma2fDD6)
 * [The main problem](#the-main-problem)
 * [Idea](#idea)
 * [Realization](#realization)
@@ -9,19 +9,22 @@
 * [Conclusion](#conclusion)
 
 ## The main problem
-{фото помидора}
-I have a curious cat. And nothing can't happen without her participation in the flat. She adores bites plants and destroys the Christmas tree. And it is bad for me.
+I have a curious cat. And nothing can't happen without her participation in the flat. She adores bites plants and destroys the Christmas tree. And it is bad for me. \
+![image](https://drive.google.com/uc?export=view&id=1oPfIov8ntX7X39dr8N2v-QiaHnXfP6Nm)
 ## Idea
 Idea is to create a system that will scare away from a particular place. First in my mind came thought to scare it like dogs with a special whistle. But for cats, it doesn't work and some noise at night bad for my mind healthy.
 So I need something soundless and something that might work at night. Bingo! IR camera + Raspberry Pi + Water pump.
 ## Realization
 ### Hardware
 My Supplies:
- * Raspberry PI 3B {фото}
- * Water Pump {фотку} I bought on AliExpress
- * Pi NoIR Camera V2 {фото}
- * Current relay (I had already had a module with two relays but indeed it is require only one) {фото}
+ * Raspberry PI 3B
+ * Water Pump. I bought on [AliExpress](https://a.aliexpress.com/_BUqZXO)
+ * Pi NoIR Camera V2
+ * Current relay
  * Lego
+ 
+<img src="https://drive.google.com/uc?export=view&id=1F9VVY3r-z-bq0VsMC8ZlNz22nBWy9ScI" width="250"/>
+<img src="https://drive.google.com/uc?export=view&id=1sonXN4EOAQhsk4zjY1OSjAGAEzEEZn50" width="250"/>
 
 ### Software
 #### Detector's work
@@ -57,4 +60,19 @@ And further tricky moment `[:, :] = image` at right side _(shape (160, 160, 3))_
 After that we call `self.__interpreter.invoke()` it makes calculation magic and get the result `self.__interpreter.get_output_details()[0]`\
 In the result we get number and result < 0 means that network detects first class object, result > 0 - second class object. And the more further from zero, the more confident result.
 
+#### How to use
+To run the script use this line:
+```
+GPIO_LED={number of GPIO for your LED} GPIO_GUN={number of GPIO for your pump} PATH_TO_MODEL={absolute path to your model .tflite file} THRESHOLD={number of threshold to detect object} {bin path to pythhon}/python3 {absolute path to folder with this project}/main.py
+```
+This script will execute as daemon. But what not to do every time don't launch this script I added it into `/etc/rc.local`
+```
+su pi -c 'GPIO_LED={number of GPIO for your LED} GPIO_GUN={number of GPIO for your pump} PATH_TO_MODEL={absolute path to your model .tflite file} THRESHOLD={number of threshold to detect object} {bin path to pythhon}/python3 {absolute path to folder with this project}/main.py'
+```
+For now on each startup of raspberry it will start this script.
+
+## Conclusion
+In my case, it is not enough good quality of prediction. Sometimes my neural network detects me like a cat 😀. \
+And I should something make with water pressure in my water gun. For now, it is low. Maybe narrow down a tube will be good enough. \
+\
 **P.S.** During the development of this project, no one animal was injured.
